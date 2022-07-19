@@ -1,0 +1,60 @@
+@page "/"
+@inject Northwind.NorthwindService northwindService
+@inject Financial.FinancialService financialService
+
+<div class="row-layout view-1-container">
+    <div class="column-layout group">
+        <IgbList class="list" view-1-scope>
+            @foreach (var item in northwindEmployees)
+            {
+                <IgbListItem>
+                    <div slot="start">
+                        <IgbAvatar Src="@item.AvatarUrl" Shape="AvatarShape.Circle"></IgbAvatar>
+                    </div>
+                    <div slot="title">@item.LastName</div>
+                    <div slot="subtitle">@item.Title</div>
+                    <div slot="end">
+                        <span class="material-icons icon">
+                            star
+                        </span>
+                    </div>
+                </IgbListItem>
+            }
+        </IgbList>
+    </div>
+    <div class="column-layout group_1">
+        <div class="column-layout group_2">
+            <IgbDataGrid DataSource="northwindEmployees" Density="ControlDisplayDensity.Cosy" SelectionMode="GridSelectionMode.MultipleRow" EditMode="EditModeType.Row" AutoGenerateColumns="false" DefaultColumnMinWidth="136" class="grid" view-1-scope>
+                <IgbNumericColumn HeaderText="employeeID" Field="EmployeeID" IsEditable="true" IsFilteringEnabled="true"></IgbNumericColumn>
+                <IgbTextColumn HeaderText="lastName" Field="LastName" IsEditable="true" IsFilteringEnabled="true"></IgbTextColumn>
+                <IgbTextColumn HeaderText="firstName" Field="FirstName" IsEditable="true" IsFilteringEnabled="true"></IgbTextColumn>
+                <IgbTextColumn HeaderText="title" Field="Title" IsEditable="true" IsFilteringEnabled="true"></IgbTextColumn>
+                <IgbTextColumn HeaderText="titleOfCourtesy" Field="TitleOfCourtesy" IsEditable="true" IsFilteringEnabled="true"></IgbTextColumn>
+                <IgbDateTimeColumn HeaderText="birthDate" Field="BirthDate" IsEditable="true" IsFilteringEnabled="true"></IgbDateTimeColumn>
+                <IgbDateTimeColumn HeaderText="hireDate" Field="HireDate" IsEditable="true" IsFilteringEnabled="true"></IgbDateTimeColumn>
+                <IgbTextColumn HeaderText="street" Field="Address.Street" IsEditable="true" IsFilteringEnabled="true"></IgbTextColumn>
+                <IgbTextColumn HeaderText="city" Field="Address.City" IsEditable="true" IsFilteringEnabled="true"></IgbTextColumn>
+                <IgbTextColumn HeaderText="region" Field="Address.Region" IsEditable="true" IsFilteringEnabled="true"></IgbTextColumn>
+                <IgbTextColumn HeaderText="postalCode" Field="Address.PostalCode" IsEditable="true" IsFilteringEnabled="true"></IgbTextColumn>
+                <IgbTextColumn HeaderText="country" Field="Address.Country" IsEditable="true" IsFilteringEnabled="true"></IgbTextColumn>
+                <IgbTextColumn HeaderText="phone" Field="Address.Phone" IsEditable="true" IsFilteringEnabled="true"></IgbTextColumn>
+                <IgbTextColumn HeaderText="notes" Field="Notes" IsEditable="true" IsFilteringEnabled="true"></IgbTextColumn>
+                <IgbTextColumn HeaderText="avatarUrl" Field="AvatarUrl" IsEditable="true" IsFilteringEnabled="true"></IgbTextColumn>
+            </IgbDataGrid>
+        </div>
+        <div class="column-layout group_2">
+            <IgbCategoryChart DataSource="financialBoxOfficeRevenue" ComputedPlotAreaMarginMode="ComputedPlotAreaMarginMode.Series" class="category-chart" view-1-scope></IgbCategoryChart>
+        </div>
+    </div>
+</div>
+
+@code {
+    private Northwind.EmployeesType[] northwindEmployees = Array.Empty<Northwind.EmployeesType>();
+    private Financial.BoxOfficeRevenueType[] financialBoxOfficeRevenue = Array.Empty<Financial.BoxOfficeRevenueType>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        northwindEmployees = await this.northwindService.GetEmployees() ?? northwindEmployees;
+        financialBoxOfficeRevenue = await this.financialService.GetBoxOfficeRevenue() ?? financialBoxOfficeRevenue;
+    }
+}
